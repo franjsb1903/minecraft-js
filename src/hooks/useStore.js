@@ -1,9 +1,10 @@
 import { nanoid } from 'nanoid'
 import { create } from 'zustand'
+import { getLocalStorage, setLocalStorage } from '../utils/localStorage'
 
 export const useStore = create(set => ({
   texture: 'dirt',
-  cubes: [],
+  cubes: getLocalStorage('world') || [],
   addCube: (x, y, z) => {
     set(state => ({
       cubes: [
@@ -24,6 +25,16 @@ export const useStore = create(set => ({
   setTexture: (texture) => {
     set(() => ({ texture }))
   },
-  saveWorld: () => {},
-  resetWorld: () => {}
+  saveWorld: () => {
+    set(state => {
+      setLocalStorage('world', state.cubes)
+      return state
+    })
+  },
+  resetWorld: () => {
+    set(() => {
+      setLocalStorage('world', [])
+      return { cubes: [] }
+    })
+  }
 }))
